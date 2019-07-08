@@ -16,10 +16,10 @@ android {
         minSdkVersion _minSdkVersion
         targetSdkVersion _targetSdkVersion
         versionCode 21
-        versionName "1.0.30"
+        versionName "1.0.31"
     }
 }
 
 dependencies {
-    provided "com.facebook.react:react-native:${_reactNativeVersion}"
+    implementation "com.facebook.react:react-native:${_reactNativeVersion}"
 }
