@@ -535,8 +535,15 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
                 values.add(uri);
                 intent.setType("image/*");
             } else if (options.hasKey("videoUrl")) {
-                File media = new File(options.getString("videoUrl"));
-                Uri uri = Uri.fromFile(media);
+                String videoUrl = options.getString("videoUrl");
+                Uri uri;
+                if ((videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
+                    uri = Uri.parse(videoUrl);
+                } else {
+                    File media = new File(videoUrl);
+                    Uri uri = Uri.fromFile(media);
+                }
+
                 if(!options.hasKey("subject")) {
                   intent.putExtra(Intent.EXTRA_SUBJECT,"Untitled_Video");
                 }
@@ -660,12 +667,20 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
         }
 
         File fileUrl = new File(options.getString("fileUrl"));
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", fileUrl);
-            intent.setDataAndType(uri, options.getString("type"));
+        Uri uri;
+        if ((videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
+            intent.setDataAndType(Uri.parse(fileUrl), options.getString("type"));
         } else {
-            intent.setDataAndType(Uri.fromFile(fileUrl), options.getString("type"));
+            File media = new File(videoUrl);
+            Uri uri = Uri.fromFile(media);
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", fileUrl);
+                intent.setDataAndType(uri, options.getString("type"));
+            } else {
+                intent.setDataAndType(Uri.fromFile(fileUrl), options.getString("type"));
+            }
         }
+
 
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Activity currentActivity = getCurrentActivity();
