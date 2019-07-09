@@ -60,43 +60,43 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
 
     public RNSendIntentModule(ReactApplicationContext reactContext) {
-      super(reactContext);
-      this.reactContext = reactContext;
+        super(reactContext);
+        this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-      return "SendIntentAndroid";
+        return "SendIntentAndroid";
     }
 
     @Override
     public Map<String, Object> getConstants() {
-      final Map<String, Object> constants = new HashMap<>();
-      constants.put("TEXT_PLAIN", TEXT_PLAIN);
-      constants.put("TEXT_HTML", TEXT_HTML);
-      return constants;
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put("TEXT_PLAIN", TEXT_PLAIN);
+        constants.put("TEXT_HTML", TEXT_HTML);
+        return constants;
     }
 
     @ReactMethod
     public void getVoiceMailNumber(final Promise promise) {
-      TelephonyManager tm =(TelephonyManager)this.reactContext.getSystemService(Context.TELEPHONY_SERVICE);
-      promise.resolve(tm.getVoiceMailNumber());
+        TelephonyManager tm =(TelephonyManager)this.reactContext.getSystemService(Context.TELEPHONY_SERVICE);
+        promise.resolve(tm.getVoiceMailNumber());
     }
 
     @ReactMethod
     public void getPhoneNumber(final Promise promise) {
-      TelephonyManager tm =(TelephonyManager)this.reactContext.getSystemService(Context.TELEPHONY_SERVICE);
-      promise.resolve(tm.getLine1Number());
+        TelephonyManager tm =(TelephonyManager)this.reactContext.getSystemService(Context.TELEPHONY_SERVICE);
+        promise.resolve(tm.getLine1Number());
     }
 
     private Intent getSendIntent(String text, String type) {
-      Intent sendIntent = new Intent();
-      sendIntent.setAction(Intent.ACTION_SEND);
-      sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-      sendIntent.setType(type);
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType(type);
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-      return sendIntent;
+        return sendIntent;
     }
 
     private boolean parseExtras(ReadableMap extras, Intent intent) {
@@ -105,7 +105,7 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
         while(it.hasNextKey()) {
             String key = it.nextKey();
             ReadableType type = extras.getType(key);
-            
+
             switch (type) {
                 case Boolean:
                     intent.putExtra(key, extras.getBoolean(key));
@@ -232,7 +232,7 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
                     }
 
                     break;
-                  //ignore everything else
+                //ignore everything else
             }
         }
 
@@ -241,143 +241,143 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void openCamera() {
-      //Needs permission "android.permission.CAMERA"
-      Intent sendIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-          this.reactContext.startActivity(sendIntent);
-      }
+        //Needs permission "android.permission.CAMERA"
+        Intent sendIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
     public void sendPhoneCall(String phoneNumberString, Boolean phoneAppOnly) {
-      //Needs permission "android.permission.CALL_PHONE"
-      Intent sendIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumberString.replaceAll("#", "%23").trim()));
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      if (phoneAppOnly) {
-          sendIntent.setPackage("com.android.server.telecom");
-      }
-
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        try {
-          this.reactContext.startActivity(sendIntent);
-        } catch(SecurityException ex) {
-          Log.d(TAG, ex.getMessage());
-
-          this.sendPhoneDial(phoneNumberString, phoneAppOnly);
+        //Needs permission "android.permission.CALL_PHONE"
+        Intent sendIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumberString.replaceAll("#", "%23").trim()));
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (phoneAppOnly) {
+            sendIntent.setPackage("com.android.server.telecom");
         }
-      }
+
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            try {
+                this.reactContext.startActivity(sendIntent);
+            } catch(SecurityException ex) {
+                Log.d(TAG, ex.getMessage());
+
+                this.sendPhoneDial(phoneNumberString, phoneAppOnly);
+            }
+        }
     }
 
     @ReactMethod
     public void sendPhoneDial(String phoneNumberString, Boolean phoneAppOnly) {
-      Intent sendIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumberString.trim()));
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      if (phoneAppOnly) {
-          sendIntent.setPackage("com.android.server.telecom");
-      }
+        Intent sendIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumberString.trim()));
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (phoneAppOnly) {
+            sendIntent.setPackage("com.android.server.telecom");
+        }
 
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.startActivity(sendIntent);
-      }
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
     public void sendSms(String phoneNumberString, String body) {
-      Intent sendIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phoneNumberString.trim()));
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phoneNumberString.trim()));
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-      if (body != null) {
-        sendIntent.putExtra("sms_body", body);
-      }
+        if (body != null) {
+            sendIntent.putExtra("sms_body", body);
+        }
 
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.startActivity(sendIntent);
-      }
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
     public void sendMail(String recepientString, String subject, String body) {
-      String uriText = "mailto:" + Uri.encode(recepientString) +
-            "?body=" + Uri.encode(body) +
-            "&subject=" + Uri.encode(subject);
+        String uriText = "mailto:" + Uri.encode(recepientString) +
+                "?body=" + Uri.encode(body) +
+                "&subject=" + Uri.encode(subject);
 
-      Intent sendIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uriText));
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uriText));
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.startActivity(sendIntent);
-      }
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
     public void sendText(String text, String type) {
-      final Intent sendIntent = this.getSendIntent(text, type);
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.runOnUiQueueThread(new Runnable(){
-            public void run(){
-                reactContext.startActivity(sendIntent);
-            }
-        });
-      }
+        final Intent sendIntent = this.getSendIntent(text, type);
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.runOnUiQueueThread(new Runnable(){
+                public void run(){
+                    reactContext.startActivity(sendIntent);
+                }
+            });
+        }
     }
 
     @ReactMethod
     public void sendTextWithTitle(final String title, String text, String type) {
-      final Intent sendIntent = this.getSendIntent(text, type);
+        final Intent sendIntent = this.getSendIntent(text, type);
 
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.runOnUiQueueThread(new Runnable(){
-            public void run(){
-                Intent ni = Intent.createChooser(sendIntent, title);
-                ni.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                reactContext.startActivity(ni);
-            }
-        });
-      }
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.runOnUiQueueThread(new Runnable(){
+                public void run(){
+                    Intent ni = Intent.createChooser(sendIntent, title);
+                    ni.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    reactContext.startActivity(ni);
+                }
+            });
+        }
     }
 
     @ReactMethod
     public void addCalendarEvent(String title, String description, String startDate, String endDate, String recurrence, String location, Boolean isAllDay) {
 
-      Calendar startCal = Calendar.getInstance();
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-      try {
-          startCal.setTime(sdf.parse(startDate));
-      } catch (ParseException e) {
-          e.printStackTrace();
-      }
+        Calendar startCal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            startCal.setTime(sdf.parse(startDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-      Calendar endCal = Calendar.getInstance();
-      try {
-          endCal.setTime(sdf.parse(endDate));
-      } catch (ParseException e) {
-          e.printStackTrace();
-      }
+        Calendar endCal = Calendar.getInstance();
+        try {
+            endCal.setTime(sdf.parse(endDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-      Intent sendIntent = new Intent(Intent.ACTION_INSERT)
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          .setData(Events.CONTENT_URI)
-          .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.getTimeInMillis())
-          .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.getTimeInMillis())
-          .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, isAllDay)
-          .putExtra(Events.TITLE, title)
-          .putExtra(Events.DESCRIPTION, description)
-          .putExtra(Events.EVENT_LOCATION, location);
+        Intent sendIntent = new Intent(Intent.ACTION_INSERT)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setData(Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, isAllDay)
+                .putExtra(Events.TITLE, title)
+                .putExtra(Events.DESCRIPTION, description)
+                .putExtra(Events.EVENT_LOCATION, location);
 
-      if (Arrays.asList(VALID_RECURRENCE).contains(recurrence.toUpperCase())) {
-          sendIntent.putExtra(Events.RRULE, "FREQ=" + recurrence.toUpperCase());
-      }
+        if (Arrays.asList(VALID_RECURRENCE).contains(recurrence.toUpperCase())) {
+            sendIntent.putExtra(Events.RRULE, "FREQ=" + recurrence.toUpperCase());
+        }
 
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-          this.reactContext.startActivity(sendIntent);
-      }
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
@@ -393,53 +393,53 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void installRemoteApp(final String uri, final String saveAs, final Promise promise) {
-      final File file = new File(this.reactContext.getExternalFilesDir(null), saveAs);
+        final File file = new File(this.reactContext.getExternalFilesDir(null), saveAs);
 
-      final Request request = new Request.Builder().url(uri).build();
-      new OkHttpClient()
-      .newCall(request)
-      .enqueue(new okhttp3.Callback() {
-        @Override
-        public void onFailure(final Call call, final IOException e) {
-          e.printStackTrace();
-          promise.resolve(false);
-        }
+        final Request request = new Request.Builder().url(uri).build();
+        new OkHttpClient()
+                .newCall(request)
+                .enqueue(new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(final Call call, final IOException e) {
+                        e.printStackTrace();
+                        promise.resolve(false);
+                    }
 
-        private void saveFile(final ResponseBody body) throws IOException, FileNotFoundException {
-          final BufferedSource source = body.source();
-          final BufferedSink sink = Okio.buffer(Okio.sink(file));
+                    private void saveFile(final ResponseBody body) throws IOException, FileNotFoundException {
+                        final BufferedSource source = body.source();
+                        final BufferedSink sink = Okio.buffer(Okio.sink(file));
 
-          sink.writeAll(source);
+                        sink.writeAll(source);
 
-          sink.flush();
-          sink.close();
-          source.close();
-        }
+                        sink.flush();
+                        sink.close();
+                        source.close();
+                    }
 
-        @Override
-        public void onResponse(final Call call, final Response response) {
-          if(!response.isSuccessful()) {
-            promise.resolve(false);
-            return;
-          }
+                    @Override
+                    public void onResponse(final Call call, final Response response) {
+                        if(!response.isSuccessful()) {
+                            promise.resolve(false);
+                            return;
+                        }
 
-          try (final ResponseBody body = response.body()) {
-            saveFile(body);
+                        try (final ResponseBody body = response.body()) {
+                            saveFile(body);
 
-            final Intent intent = new Intent(Intent.ACTION_VIEW)
-                                  .setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            final Intent intent = new Intent(Intent.ACTION_VIEW)
+                                    .setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            reactContext.startActivity(intent);
+                            reactContext.startActivity(intent);
 
-            promise.resolve(true);
-          }
-          catch (final Exception e) {
-            e.printStackTrace();
-            promise.resolve(false);
-          }
-        }
-      });
+                            promise.resolve(true);
+                        }
+                        catch (final Exception e) {
+                            e.printStackTrace();
+                            promise.resolve(false);
+                        }
+                    }
+                });
     }
 
     @ReactMethod
@@ -462,15 +462,15 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void openCalendar() {
-      ComponentName cn = new ComponentName("com.android.calendar", "com.android.calendar.LaunchActivity");
+        ComponentName cn = new ComponentName("com.android.calendar", "com.android.calendar.LaunchActivity");
 
-      Intent sendIntent = new Intent()
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          .setType("vnd.android.cursor.item/event");
+        Intent sendIntent = new Intent()
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .setType("vnd.android.cursor.item/event");
 
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-          this.reactContext.startActivity(sendIntent);
-      }
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
@@ -494,7 +494,7 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
             File media = new File(options.getString("videoUrl"));
             Uri uri = Uri.fromFile(media);
             if(!options.hasKey("subject")) {
-              intent.putExtra(Intent.EXTRA_SUBJECT,"Untitled_Video");
+                intent.putExtra(Intent.EXTRA_SUBJECT,"Untitled_Video");
             }
             intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.setType("video/*");
@@ -515,11 +515,11 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
         ArrayList<Object> readable = option.toArrayList();
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
- 
-          String name = Intent.EXTRA_TEXT;
-          ArrayList<Object> values = new ArrayList<>();
 
-          for(int i = 0; i < option.size(); i++){
+        String name = Intent.EXTRA_TEXT;
+        ArrayList<Object> values = new ArrayList<>();
+
+        for(int i = 0; i < option.size(); i++){
             ReadableMap options = option.getMap(i);
 
             if (options.hasKey("subject")) {
@@ -541,11 +541,11 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
                     uri = Uri.parse(videoUrl);
                 } else {
                     File media = new File(videoUrl);
-                    Uri uri = Uri.fromFile(media);
+                    uri = Uri.fromFile(media);
                 }
 
                 if(!options.hasKey("subject")) {
-                  intent.putExtra(Intent.EXTRA_SUBJECT,"Untitled_Video");
+                    intent.putExtra(Intent.EXTRA_SUBJECT,"Untitled_Video");
                 }
                 name = Intent.EXTRA_STREAM;
                 values.add(uri);
@@ -572,9 +572,9 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
             sendIntent.setDataAndType(uri, mimeType);
         else
             sendIntent.setData(uri);
-        
+
         sendIntent.setPackage(packageName);
-        
+
         if (!parseExtras(extras, sendIntent)) {
             promise.resolve(false);
             return;
@@ -588,14 +588,14 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void openMaps(String query) {
-      Uri gmmIntentUri = Uri.parse("geo:0,0?q="+query);
-      Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW, gmmIntentUri);
-      sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q="+query);
+        Intent sendIntent = new Intent(android.content.Intent.ACTION_VIEW, gmmIntentUri);
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-      //Check that an app exists to receive the intent
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-        this.reactContext.startActivity(sendIntent);
-      }
+        //Check that an app exists to receive the intent
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
     @ReactMethod
@@ -667,13 +667,14 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
         }
         String url = options.getString("fileUrl");
         if (url.startsWith("http://") || url.startsWith("https://")){
-            intent.setDataAndType(Uri.parse(url), options.getString("type"));
+            intent.setDataAndType(Uri.parse(fileUrl), options.getString("type"));
         } else {
+            File file = new File(url);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", url);
+                Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", file);
                 intent.setDataAndType(uri, options.getString("type"));
             } else {
-                intent.setDataAndType(Uri.fromFile(url), options.getString("type"));
+                intent.setDataAndType(Uri.fromFile(file), options.getString("type"));
             }
         }
 
@@ -687,11 +688,11 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void openEmailApp() {
-      Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-      sendIntent.addCategory(Intent.CATEGORY_APP_EMAIL);
-      if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
-          this.reactContext.startActivity(sendIntent);
-      }
+        Intent sendIntent = new Intent(Intent.ACTION_MAIN);
+        sendIntent.addCategory(Intent.CATEGORY_APP_EMAIL);
+        if (sendIntent.resolveActivity(this.reactContext.getPackageManager()) != null) {
+            this.reactContext.startActivity(sendIntent);
+        }
     }
 
 }
