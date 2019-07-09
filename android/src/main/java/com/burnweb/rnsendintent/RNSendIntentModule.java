@@ -665,18 +665,17 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
         if (options.hasKey("subject")) {
             intent.putExtra(Intent.EXTRA_SUBJECT, options.getString("subject"));
         }
-
-        File fileUrl = new File(options.getString("fileUrl"));
-        if (videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
+        String url = options.getString("fileUrl");
+        if (url.startsWith("http://") || url.startsWith("https://")){
             intent.setDataAndType(Uri.parse(fileUrl), options.getString("type"));
         } else {
-            File media = new File(videoUrl);
+            File media = new File(url);
             Uri uri = Uri.fromFile(media);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", fileUrl);
+                Uri uri = FileProvider.getUriForFile(this.reactContext, this.reactContext.getPackageName() + ".fileprovider", url);
                 intent.setDataAndType(uri, options.getString("type"));
             } else {
-                intent.setDataAndType(Uri.fromFile(fileUrl), options.getString("type"));
+                intent.setDataAndType(Uri.fromFile(url), options.getString("type"));
             }
         }
 
