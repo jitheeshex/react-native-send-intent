@@ -537,7 +537,7 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
             } else if (options.hasKey("videoUrl")) {
                 String videoUrl = options.getString("videoUrl");
                 Uri uri;
-                if ((videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
+                if (videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
                     uri = Uri.parse(videoUrl);
                 } else {
                     File media = new File(videoUrl);
@@ -668,7 +668,7 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
         File fileUrl = new File(options.getString("fileUrl"));
         Uri uri;
-        if ((videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
+        if (videoUrl.startsWith("http://") || videoUrl.startsWith("https://")){
             intent.setDataAndType(Uri.parse(fileUrl), options.getString("type"));
         } else {
             File media = new File(videoUrl);
